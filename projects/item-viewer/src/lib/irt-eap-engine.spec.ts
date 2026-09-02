@@ -19,4 +19,13 @@ describe('IrtEapEngine', () => {
     const area = preview.posteriorIfCorrect.reduce((sum, point) => sum + point.density * 0.05, 0);
     expect(area).toBeCloseTo(1, 6);
   });
+  it('uses a debug estimate as the posterior for the next response', () => {
+    const engine = new IrtEapEngine();
+    engine.setEstimate(0.5, 0.01);
+
+    const updated = engine.respond(item, true).estimate;
+
+    expect(updated.theta).toBeCloseTo(0.5, 1);
+    expect(updated.standardError).toBeLessThan(0.1);
+  });
 });

@@ -50,6 +50,11 @@ export class AppComponent {
     this.snapshot = this.engine.respond(this.question, correct);
     this.thetaHistory = [...this.thetaHistory, this.snapshot.estimate.theta];
   }
+  applyDebugEdit(): void {
+    this.engine.setEstimate(this.snapshot.estimate.theta, this.snapshot.estimate.standardError);
+    this.snapshot = this.engine.preview(this.question);
+    this.thetaHistory = [...this.thetaHistory, this.snapshot.estimate.theta];
+  }
   next(): void {
     if (!this.answered) return;
     if (this.currentIndex === this.questions.length - 1) { this.restart(); return; }

@@ -16,7 +16,7 @@
         @if (answered) {<div class="feedback" [class.feedback--wrong]="outcome === 'incorrect'"><strong>{{ outcome === 'correct' ? 'Correct response' : 'Not quite' }}</strong><span>The observed response is now the posterior shown in the panel.</span></div>}
         <footer><span>@if (!answered) {Select one answer to update the estimate.} @else {The next item uses this posterior as its prior.}</span>@if (!answered) {<button class="primary" [disabled]="selectedIndex === null" (click)="submit()">Submit response</button>} @else {<button class="primary" (click)="next()">{{ currentIndex === questions.length - 1 ? 'Restart demo' : 'Next question' }} <b>→</b></button>}</footer>
       </section>
-      <lib-item-viewer [item]="question" [snapshot]="snapshot" [responseOutcome]="outcome" [thetaHistory]="thetaHistory" />
+      <lib-item-viewer [item]="question" [snapshot]="snapshot" [responseOutcome]="outcome" [thetaHistory]="thetaHistory" (debugSaved)="applyDebugEdit()" />
     </div>
   </main>
 </div>

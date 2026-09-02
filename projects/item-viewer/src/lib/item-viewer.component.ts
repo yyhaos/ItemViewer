@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DistributionPoint, PsychometricItem, PsychometricSnapshot } from './psychometric.models';
 
@@ -14,6 +14,7 @@ export class ItemViewerComponent {
   @Input({ required: true }) snapshot!: PsychometricSnapshot;
   @Input() responseOutcome: 'correct' | 'incorrect' | null = null;
   @Input() thetaHistory: number[] = [];
+  @Output() debugSaved = new EventEmitter<void>();
 
   editMode = false;
   draft = { discrimination: 0, difficulty: 0, theta: 0, standardError: 0 };
@@ -21,6 +22,12 @@ export class ItemViewerComponent {
   get probabilityCorrect(): number {
     const { discrimination, difficulty } = this.item.parameters;
     return 1 / (1 + Math.exp(-1.7 * discrimination * (this.snapshot.estimate.theta - difficulty)));
+  }
+
+  get abilityInterval(): [number, number] {
+    const theta = this.editMode ? this.draft.theta : this.snapshot.estimate.theta;
+    const standardError = this.editMode ? this.draft.standardError : this.snapshot.estimate.standardError;
+    return [theta - 1.96 * standardError, theta + 1.96 * standardError];
   }
 
   toggleEdit(): void {
@@ -40,6 +47,7 @@ export class ItemViewerComponent {
     this.snapshot.estimate.standardError = this.draft.standardError;
     this.snapshot.probabilityCorrect = this.probabilityCorrect;
     this.editMode = false;
+    this.debugSaved.emit();
   }
 
   private roundForEditing(value: number): number {
