@@ -1,16 +1,16 @@
 <aside class="panel" aria-label="Psychometric panel">
   <header><div><p class="eyebrow">Live estimate</p><h2>Psychometric panel</h2></div><span class="status" [class.done]="responseOutcome">{{ responseOutcome ? 'Posterior updated' : 'Awaiting response' }}</span></header>
-  <section class="metrics">
-    <div><span>Ability · EAP</span><strong>{{ snapshot.estimate.theta | number:'1.2-2' }}</strong></div>
-    <div><span>Uncertainty · SE</span><strong>{{ snapshot.estimate.standardError | number:'1.2-2' }}</strong></div>
-    <div><span>P(correct)</span><strong>{{ snapshot.probabilityCorrect | percent:'1.0-0' }}</strong></div>
-  </section>
   <section class="card">
     <div class="title"><div><p class="eyebrow">Current item</p><h3>2PL parameters</h3></div><span class="pill">{{ item.id }}</span></div>
     <div class="parameter"><span><i>a</i> discrimination</span><b>{{ item.parameters.discrimination | number:'1.2-2' }}</b></div>
     <div class="parameter"><span><i>b</i> difficulty</span><b>{{ item.parameters.difficulty | number:'1.2-2' }}</b></div>
   </section>
-  <section class="card chart">
+  <section class="metrics">
+    <div><span>Ability · EAP</span><strong>{{ snapshot.estimate.theta | number:'1.2-2' }}</strong></div>
+    <div><span>Uncertainty · SE</span><strong>{{ snapshot.estimate.standardError | number:'1.2-2' }}</strong></div>
+    <div><span>P(correct)</span><strong>{{ snapshot.probabilityCorrect | percent:'1.0-0' }}</strong></div>
+  </section>
+  <!-- <section class="card chart">
     <div class="title"><div><p class="eyebrow">Bayesian update</p><h3>{{ responseOutcome ? 'Observed posterior' : 'Response preview' }}</h3></div></div>
     <svg viewBox="0 0 552 180" role="img" aria-label="Prior and posterior distributions">
       <line class="axis" x1="16" y1="154" x2="536" y2="154"/><line class="zero" x1="276" y1="20" x2="276" y2="154"/>
@@ -25,5 +25,5 @@
     <div class="title"><div><p class="eyebrow">Current item</p><h3>Information function</h3></div></div>
     <svg viewBox="0 0 552 146" role="img" aria-label="Item information curve"><line class="axis" x1="16" y1="126" x2="536" y2="126"/><path class="curve information" [attr.d]="informationPath()"/><text x="12" y="142">−4</text><text x="270" y="142">θ</text><text x="528" y="142">4</text></svg>
   </section>
-  @if (thetaHistory.length > 1) {<section class="card chart history"><div class="title"><div><p class="eyebrow">Session</p><h3>Ability trajectory</h3></div></div><svg viewBox="0 0 552 88" role="img" aria-label="Ability estimate history"><line class="zero" x1="16" y1="46" x2="536" y2="46"/><path class="curve trajectory" [attr.d]="historyPath()"/></svg></section>}
+  @if (thetaHistory.length > 1) {<section class="card chart history"><div class="title"><div><p class="eyebrow">Session</p><h3>Ability trajectory</h3></div></div><svg viewBox="0 0 552 88" role="img" aria-label="Ability estimate history"><line class="zero" x1="16" y1="46" x2="536" y2="46"/><path class="curve trajectory" [attr.d]="historyPath()"/></svg></section>} -->
 </aside>
