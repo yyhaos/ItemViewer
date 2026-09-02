@@ -1,9 +1,9 @@
 import { AbilityEstimate, DistributionPoint, PsychometricItem, PsychometricSnapshot } from './psychometric.models';
 
-const MIN_THETA = -4;
-const MAX_THETA = 4;
+const MIN_THETA = -10;
+const MAX_THETA = 10;
 const GRID_STEP = 0.05;
-const LOGISTIC_SCALE = 1.7;
+const LOGISTIC_SCALE = 1.0;
 
 export class IrtEapEngine {
   private readonly grid = Array.from(
@@ -30,6 +30,21 @@ export class IrtEapEngine {
     const snapshot = this.preview(item);
     this.posterior = correct ? snapshot.posteriorIfCorrect : snapshot.posteriorIfIncorrect;
     return { ...snapshot, actualPosterior: this.clone(this.posterior), estimate: this.estimateDistribution(this.posterior) };
+  }
+
+  setEstimate(theta: number, standardError: number): void {
+    const safeTheta = Math.max(MIN_THETA, Math.min(MAX_THETA, theta));
+    const safeStandardError = Math.max(0.001, standardError);
+    const logDensities = this.grid.map(
+      point => -0.5 * ((point - safeTheta) / safeStandardError) ** 2,
+    );
+    const maximum = Math.max(...logDensities);
+    this.posterior = this.normalize(
+      this.grid.map((point, index) => ({
+        theta: point,
+        density: Math.exp(logDensities[index] - maximum),
+      })),
+    );
   }
 
   reset(): void { this.posterior = this.standardNormal(); }
