@@ -10,6 +10,18 @@
     <div><span>Uncertainty · SE</span>@if (editMode) {<input type="number" step="0.01" min="0" aria-label="Standard error" [(ngModel)]="draft.standardError">} @else {<strong>{{ snapshot.estimate.standardError | number:'1.2-2' }}</strong>}</div>
     <div><span>P(correct)</span><strong>{{ probabilityCorrect | percent:'1.0-0' }}</strong></div>
   </section>
+  <section class="outcome-estimates" aria-label="Response estimate preview">
+    <div class="outcome-row">
+      <b>IF CORRECT</b>
+      <span><small>Ability · EAP</small><strong>{{ correctEstimate.theta | number:'1.2-2' }}</strong><em>[{{ intervalFor(correctEstimate)[0] | number:'1.2-2' }}, {{ intervalFor(correctEstimate)[1] | number:'1.2-2' }}]</em></span>
+      <span><small>Uncertainty · SE</small><strong>{{ correctEstimate.standardError | number:'1.2-2' }}</strong></span>
+    </div>
+    <div class="outcome-row">
+      <b>IF INCORRECT</b>
+      <span><small>Ability · EAP</small><strong>{{ incorrectEstimate.theta | number:'1.2-2' }}</strong><em>[{{ intervalFor(incorrectEstimate)[0] | number:'1.2-2' }}, {{ intervalFor(incorrectEstimate)[1] | number:'1.2-2' }}]</em></span>
+      <span><small>Uncertainty · SE</small><strong>{{ incorrectEstimate.standardError | number:'1.2-2' }}</strong></span>
+    </div>
+  </section>
   <!-- <section class="card chart">
     <div class="title"><div><p class="eyebrow">Bayesian update</p><h3>{{ responseOutcome ? 'Observed posterior' : 'Response preview' }}</h3></div></div>
     <svg viewBox="0 0 552 180" role="img" aria-label="Prior and posterior distributions">

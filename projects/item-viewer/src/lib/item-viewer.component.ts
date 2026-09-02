@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DistributionPoint, PsychometricItem, PsychometricSnapshot } from './psychometric.models';
+import { AbilityEstimate, DistributionPoint, PsychometricItem, PsychometricSnapshot } from './psychometric.models';
 
 @Component({
   selector: 'lib-item-viewer',
@@ -30,6 +30,21 @@ export class ItemViewerComponent {
     return [theta - 1.96 * standardError, theta + 1.96 * standardError];
   }
 
+  get correctEstimate(): AbilityEstimate {
+    return this.estimateDistribution(this.snapshot.posteriorIfCorrect);
+  }
+
+  get incorrectEstimate(): AbilityEstimate {
+    return this.estimateDistribution(this.snapshot.posteriorIfIncorrect);
+  }
+
+  intervalFor(estimate: AbilityEstimate): [number, number] {
+    return [
+      estimate.theta - 1.96 * estimate.standardError,
+      estimate.theta + 1.96 * estimate.standardError,
+    ];
+  }
+
   toggleEdit(): void {
     if (!this.editMode) {
       this.draft = {
@@ -52,6 +67,17 @@ export class ItemViewerComponent {
 
   private roundForEditing(value: number): number {
     return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
+
+  private estimateDistribution(points: DistributionPoint[]): AbilityEstimate {
+    if (!points.length) return { theta: 0, standardError: 0 };
+    const step = points.length > 1 ? points[1].theta - points[0].theta : 1;
+    const theta = points.reduce((sum, point) => sum + point.theta * point.density * step, 0);
+    const variance = points.reduce(
+      (sum, point) => sum + (point.theta - theta) ** 2 * point.density * step,
+      0,
+    );
+    return { theta, standardError: Math.sqrt(Math.max(variance, 0)) };
   }
 
   distributionPath(points: DistributionPoint[]): string {
