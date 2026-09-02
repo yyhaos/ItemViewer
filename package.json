@@ -3,7 +3,7 @@
     "version":  "0.0.0",
     "scripts":  {
                     "ng":  "ng",
-                    "start":  "ng serve demo",
+                    "start":  "npm run build:lib \u0026\u0026 ng serve demo",
                     "build":  "npm run build:lib \u0026\u0026 npm run build:demo",
                     "watch":  "ng build item-viewer --watch --configuration development",
                     "test":  "npm run test:lib \u0026\u0026 npm run test:demo",

@@ -1,5 +1,22 @@
-<main>
-  <h1>Hello, {{ title }}</h1>
-  <p>This application consumes the local item-viewer library.</p>
-  <lib-item-viewer />
-</main>
+<div class="shell">
+  <header class="topbar"><a class="brand" href="#" aria-label="Measure Lab home"><span>ML</span><strong>Measure Lab</strong></a><div class="topbar__meta"><span>Author sandbox</span><b>2PL · EAP</b></div></header>
+  <main>
+    <section class="intro"><div><p class="kicker">Interactive psychometrics</p><h1>See the estimate move.</h1><p>Answer a simple item, then inspect how Bayesian evidence reshapes the ability estimate in real time.</p></div><div class="progress"><span>Item {{ currentIndex + 1 }} of {{ questions.length }}</span><div><i [style.width.%]="(currentIndex + 1) / questions.length * 100"></i></div></div></section>
+    <div class="workspace">
+      <section class="question-card">
+        <div class="question-meta"><span>Question {{ currentIndex + 1 }}</span><span>Single response</span></div>
+        <h2>{{ question.prompt }}</h2>
+        <div class="options" role="radiogroup" aria-label="Answer options">
+          @for (option of question.options; track $index) {
+            <button type="button" class="option" [class.selected]="selectedIndex === $index" [class.correct]="answered && $index === question.correctIndex" [class.incorrect]="answered && selectedIndex === $index && $index !== question.correctIndex" [disabled]="answered" (click)="select($index)">
+              <span class="letter">{{ ['A','B','C','D'][$index] }}</span><span>{{ option }}</span><span class="marker">{{ answered && $index === question.correctIndex ? '✓' : answered && selectedIndex === $index ? '×' : '' }}</span>
+            </button>
+          }
+        </div>
+        @if (answered) {<div class="feedback" [class.feedback--wrong]="outcome === 'incorrect'"><strong>{{ outcome === 'correct' ? 'Correct response' : 'Not quite' }}</strong><span>The observed response is now the posterior shown in the panel.</span></div>}
+        <footer><span>@if (!answered) {Select one answer to update the estimate.} @else {The next item uses this posterior as its prior.}</span>@if (!answered) {<button class="primary" [disabled]="selectedIndex === null" (click)="submit()">Submit response</button>} @else {<button class="primary" (click)="next()">{{ currentIndex === questions.length - 1 ? 'Restart demo' : 'Next question' }} <b>→</b></button>}</footer>
+      </section>
+      <lib-item-viewer [item]="question" [snapshot]="snapshot" [responseOutcome]="outcome" [thetaHistory]="thetaHistory" />
+    </div>
+  </main>
+</div>
