@@ -6,11 +6,41 @@ interface DemoQuestion extends PsychometricItem { prompt: string; options: strin
 @Component({ selector: 'app-root', imports: [ItemViewerComponent], templateUrl: './app.component.html', styleUrl: './app.component.scss' })
 export class AppComponent {
   readonly questions: DemoQuestion[] = [
-    { id:'MATH-101', prompt:'A rectangle has a length of 8 cm and a width of 5 cm. What is its area?', options:['13 cm²','26 cm²','40 cm²','80 cm²'], correctIndex:2, parameters:{ discrimination:1.2, difficulty:-0.35 } },
-    { id:'MATH-102', prompt:'Which expression is equivalent to 3(x + 4)?', options:['3x + 4','3x + 7','3x + 12','7x'], correctIndex:2, parameters:{ discrimination:0.9, difficulty:-0.8 } },
-    { id:'MATH-103', prompt:'If 2x − 6 = 10, what is the value of x?', options:['2','5','8','16'], correctIndex:2, parameters:{ discrimination:1.45, difficulty:0.15 } },
-    { id:'MATH-104', prompt:'What is the slope of the line y = −2x + 7?', options:['−7','−2','2','7'], correctIndex:1, parameters:{ discrimination:1.1, difficulty:0.55 } },
-    { id:'MATH-105', prompt:'Which value solves x² − 5x + 6 = 0?', options:['x = 1 only','x = 2 or 3','x = −2 or −3','x = 6 only'], correctIndex:1, parameters:{ discrimination:1.6, difficulty:1.05 } },
+    {
+      id: 'MATH-101',
+      prompt: 'Item 1: Correct answer is A',
+      options: ['Correct', 'Incorrect', 'Incorrect', 'Incorrect'],
+      correctIndex: 0,
+      parameters: { discrimination: 1.0, difficulty: -0.5 }
+    },
+    {
+      id: 'MATH-102',
+      prompt: 'Item 2: Correct answer is A',
+      options: ['Correct', 'Incorrect', 'Incorrect', 'Incorrect'],
+      correctIndex: 0,
+      parameters: { discrimination: 0.9, difficulty: -0.8 }
+    },
+    {
+      id: 'MATH-103',
+      prompt: 'Item 3: Correct answer is A',
+      options: ['Correct', 'Incorrect', 'Incorrect', 'Incorrect'],
+      correctIndex: 0,
+      parameters: { discrimination: 1.45, difficulty: 0.15 }
+    },
+    {
+      id: 'MATH-104',
+      prompt: 'Item 4: Correct answer is A',
+      options: ['Correct', 'Incorrect', 'Incorrect', 'Incorrect'],
+      correctIndex: 0,
+      parameters: { discrimination: 1.1, difficulty: 0.55 }
+    },
+    {
+      id: 'MATH-105',
+      prompt: 'Item 5: Correct answer is A',
+      options: ['Correct', 'Incorrect', 'Incorrect', 'Incorrect'],
+      correctIndex: 0,
+      parameters: { discrimination: 1.6, difficulty: 1.05 }
+    }
   ];
   private readonly engine = new IrtEapEngine();
   currentIndex = 0;
