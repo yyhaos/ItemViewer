@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DistributionPoint, PsychometricItem, PsychometricSnapshot } from './psychometric.models';
 
 @Component({
   selector: 'lib-item-viewer',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './item-viewer.component.html',
   styleUrl: './item-viewer.component.scss',
 })
@@ -13,6 +14,37 @@ export class ItemViewerComponent {
   @Input({ required: true }) snapshot!: PsychometricSnapshot;
   @Input() responseOutcome: 'correct' | 'incorrect' | null = null;
   @Input() thetaHistory: number[] = [];
+
+  editMode = false;
+  draft = { discrimination: 0, difficulty: 0, theta: 0, standardError: 0 };
+
+  get probabilityCorrect(): number {
+    const { discrimination, difficulty } = this.item.parameters;
+    return 1 / (1 + Math.exp(-1.7 * discrimination * (this.snapshot.estimate.theta - difficulty)));
+  }
+
+  toggleEdit(): void {
+    if (!this.editMode) {
+      this.draft = {
+        discrimination: this.roundForEditing(this.item.parameters.discrimination),
+        difficulty: this.roundForEditing(this.item.parameters.difficulty),
+        theta: this.roundForEditing(this.snapshot.estimate.theta),
+        standardError: this.roundForEditing(this.snapshot.estimate.standardError),
+      };
+      this.editMode = true;
+      return;
+    }
+    this.item.parameters.discrimination = this.draft.discrimination;
+    this.item.parameters.difficulty = this.draft.difficulty;
+    this.snapshot.estimate.theta = this.draft.theta;
+    this.snapshot.estimate.standardError = this.draft.standardError;
+    this.snapshot.probabilityCorrect = this.probabilityCorrect;
+    this.editMode = false;
+  }
+
+  private roundForEditing(value: number): number {
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
 
   distributionPath(points: DistributionPoint[]): string {
     const candidates = [
