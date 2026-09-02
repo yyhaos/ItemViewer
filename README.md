@@ -1,59 +1,145 @@
 # ItemViewer
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+An interactive Angular component for exploring item parameters and ability estimates in a two-parameter logistic (2PL) IRT model.
 
-## Development server
+The repository contains both a reusable Angular library and a demo application. The demo lets you answer sample questions and inspect how each response changes the estimated ability and uncertainty.
 
-To start a local development server, run:
+## Live demo
 
-```bash
-ng serve
+[Open the interactive demo](https://yyhaos.github.io/ItemViewer/)
+
+## Features
+
+- Displays the current item's discrimination (`a`) and difficulty (`b`)
+- Shows the current EAP ability estimate and standard error
+- Displays the normal-approximation interval `EAP ± 1.96 × SE`
+- Calculates the probability of a correct response
+- Previews the EAP, interval, and SE after a correct or incorrect response
+- Provides a Debug mode for editing `a`, `b`, EAP, and SE
+- Rebuilds the internal posterior after a Debug edit, so later responses continue from the edited state
+- Includes a responsive interactive demo
+
+## Model
+
+The probability of a correct response is calculated using the 2PL model:
+
+```text
+P(correct | θ) = 1 / (1 + exp(- a × (θ - b)))
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+where:
 
-## Code scaffolding
+- `θ` is the ability estimate
+- `a` is item discrimination
+- `b` is item difficulty
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Ability is estimated with expected a posteriori (EAP) estimation over a discrete ability grid.
 
-```bash
-ng generate component component-name
+## Project structure
+
+```text
+projects/
+├── item-viewer/   Reusable Angular library
+└── demo/          Interactive demo application
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Requirements
+
+- Node.js 22
+- npm
+- Angular CLI 19
+
+## Local development
+
+Install dependencies:
 
 ```bash
-ng generate --help
+npm ci
 ```
 
-## Building
-
-To build the project run:
+Build the library and start the demo:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Then open:
 
-## Running unit tests
+```text
+http://localhost:4200/
+```
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## Build
+
+Build the library and demo:
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+Build them separately:
 
 ```bash
-ng e2e
+npm run build:lib
+npm run build:demo
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Production output:
 
-## Additional Resources
+```text
+dist/item-viewer/
+dist/demo/browser/
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Tests
+
+Run all unit tests:
+
+```bash
+npm test
+```
+
+Or run each test suite separately:
+
+```bash
+npm run test:lib
+npm run test:demo
+```
+
+## GitHub Pages
+
+The workflow in `.github/workflows/deploy-pages.yml` builds and deploys the demo whenever a commit is pushed to `master`.
+
+The Pages build uses:
+
+```bash
+npx ng build demo --configuration production --base-href /ItemViewer/
+```
+
+To enable deployment, open the repository's **Settings → Pages** and select **GitHub Actions** as the publishing source.
+
+## Library usage
+
+Import the standalone component:
+
+```ts
+import { ItemViewerComponent } from 'item-viewer';
+
+@Component({
+  imports: [ItemViewerComponent]
+})
+export class ExampleComponent {}
+```
+
+Use it in a template:
+
+```html
+<lib-item-viewer
+  [item]="question"
+  [snapshot]="snapshot"
+  [responseOutcome]="outcome"
+  [thetaHistory]="thetaHistory"
+/>
+```
+
+The component expects a `PsychometricItem` and a `PsychometricSnapshot`. The `IrtEapEngine` class can generate and update snapshots.
